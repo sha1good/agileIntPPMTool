@@ -1,8 +1,11 @@
 package com.luv2code.ppmtool.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +21,14 @@ public class ProjectController {
 	@Autowired
 	private ProjectServices projectService;
 	
+	//Binding Result helps us to Bind our Object with the validation that was setup
+	
 	@PostMapping("")
-	public ResponseEntity<Project> createNewProject(@RequestBody Project project){
+	public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project, BindingResult result){
+		
+		if(result.hasErrors()) {
+			 return new ResponseEntity<String>("Invalid Object Passed ", HttpStatus.BAD_REQUEST);
+		}
 		Project project1 = projectService.saveOrUpdateProject(project);
 		return new ResponseEntity<Project>(project1,HttpStatus.CREATED);
 	}
