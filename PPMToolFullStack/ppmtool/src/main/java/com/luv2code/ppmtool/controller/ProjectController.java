@@ -1,5 +1,7 @@
 package com.luv2code.ppmtool.controller;
 
+import java.util.Optional;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +12,18 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.luv2code.ppmtool.domain.Project;
+import com.luv2code.ppmtool.exceptions.ProjectIdException;
 import com.luv2code.ppmtool.services.MapValidationErrorService;
 import com.luv2code.ppmtool.services.ProjectServices;
 
 import net.bytebuddy.asm.Advice.Return;
+import net.bytebuddy.implementation.bytecode.Throw;
 
 @RestController
 @RequestMapping("/api/project")
@@ -65,7 +70,46 @@ public class ProjectController {
 	}
 	
 	
-	
-	
+	@PutMapping("/{id}")
+	 public ResponseEntity<?> updateProject(@PathVariable Long id, @RequestBody Project project){
+		
+		
+		//Long  Proid = Long.parseLong(id);
+		
+		Optional<Project> projectData = projectService.findById(id);
+		
+		if(!projectData.isPresent()) {
+			 throw new ProjectIdException("Id  -" + id  + " was not found"); 
+		}
+		if(projectData.isPresent()) {
+			Project projectGotten = projectData.get(); // will be retreived from the DB
+			projectGotten.setProjectName(project.getProjectName());
+			projectGotten.setDescription(project.getDescription());
+			projectGotten.setProjectIdentifier(project.getProjectIdentifier());
+			
+			projectService.saveOrUpdateProject(projectGotten);
+			
+			return new  ResponseEntity<String>("Your Project with '" + id + "' was successfully updated!", HttpStatus.OK);
+		}else {
+			 return  new ResponseEntity<String>("Your Project with '" + id + "' was not found!",HttpStatus.NOT_FOUND);
+			
+		}
+		
 	
 }
+	
+	@DeleteMapping("/all")
+	public  ResponseEntity<?> deleteAllProjects(){
+		
+	try {
+		projectService.delteAllproject();
+		return new ResponseEntity<String>("All project has been successfully deleted", HttpStatus.OK);
+	
+     }catch (Exception e) {
+	  return new ResponseEntity<String>("Project was unable to be deleted! ", HttpStatus.EXPECTATION_FAILED);
+  }
+}
+	
+	
+	
+}	

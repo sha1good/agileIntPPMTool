@@ -1,5 +1,8 @@
 package com.luv2code.ppmtool.services;
 
+import java.util.Optional;
+
+import org.apache.el.lang.ELArithmetic.LongDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,4 +54,20 @@ public class ProjectServices {
 		   projectRepository.delete(project);
 	 }
 
+	 
+	 public Optional<Project> findById(Long id) {
+		 Optional<Project> project = projectRepository.findById(id);
+		 
+		 if(project ==null) {
+			 throw new ProjectIdException("Project with '" + id + "' does not exist");
+		}
+		return project;
+		
+	 }
+	 
+	 
+	 public void delteAllproject() {
+	      projectRepository.deleteAll();
+	 }
+	 
 }
