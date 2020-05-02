@@ -17,6 +17,8 @@ import com.luv2code.ppmtool.domain.Project;
 import com.luv2code.ppmtool.services.MapValidationErrorService;
 import com.luv2code.ppmtool.services.ProjectServices;
 
+import net.bytebuddy.asm.Advice.Return;
+
 @RestController
 @RequestMapping("/api/project")
 public class ProjectController {
@@ -48,7 +50,10 @@ public class ProjectController {
 		 
 	}
 	
-
+  @GetMapping("/all")
+  public Iterable<Project> findAllProject(){
+	   return projectService.findAllProject();
+  }
 	
 	
 	
