@@ -8,10 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-<<<<<<< HEAD
+
 import org.springframework.web.bind.annotation.CrossOrigin;
-=======
->>>>>>> 102fcab753ad573f39ddfcd3465b8c157f7a03dd
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
