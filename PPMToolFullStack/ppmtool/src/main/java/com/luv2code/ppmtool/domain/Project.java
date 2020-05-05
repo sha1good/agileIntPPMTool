@@ -1,0 +1,130 @@
+package com.luv2code.ppmtool.domain;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@Entity
+public class Project {
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long Id;
+	
+	@NotBlank(message="Project Name is required")
+	private String projectName;
+	
+	@NotBlank(message="Project Identifier is required")
+<<<<<<< HEAD
+	@Size(min=5,max=15, message="Please use 5 to 15 characters")
+=======
+	@Size(min=4,max=5, message="Please use 4 to 5 characters")
+>>>>>>> 102fcab753ad573f39ddfcd3465b8c157f7a03dd
+	@Column(updatable=false, unique=true)
+	private String projectIdentifier;
+	
+	@NotBlank(message="Project Description is required")
+	private String description;
+	
+	@JsonFormat(pattern="yyyy-mm-dd")
+	private Date start_date;
+	@JsonFormat(pattern="yyyy-mm-dd")
+	private Date end_date;
+	
+	@JsonFormat(pattern="yyyy-mm-dd")
+	private Date create_At;
+	
+	@JsonFormat(pattern="yyyy-mm-dd")
+	private Date updated_At;
+	
+	public Project() {
+		
+	}
+	
+	@PrePersist
+	protected void onCreate() {
+		this.create_At = new Date();
+	}
+	
+	@PreUpdate
+	protected void onUpdate() {
+		this.updated_At = new Date();
+		
+	}
+
+	public Long getId() {
+		return Id;
+	}
+
+	public void setId(Long id) {
+		Id = id;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	public String getProjectIdentifier() {
+		return projectIdentifier;
+	}
+
+	public void setProjectIdentifier(String projectIdentifier) {
+		this.projectIdentifier = projectIdentifier;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Date getStart_date() {
+		return start_date;
+	}
+
+	public void setStart_date(Date start_date) {
+		this.start_date = start_date;
+	}
+
+	public Date getEnd_date() {
+		return end_date;
+	}
+
+	public void setEnd_date(Date end_date) {
+		this.end_date = end_date;
+	}
+
+	public Date getCreate_At() {
+		return create_At;
+	}
+
+	public void setCreate_At(Date create_At) {
+		this.create_At = create_At;
+	}
+
+	public Date getUpdated_At() {
+		return updated_At;
+	}
+
+	public void setUpdated_At(Date updated_At) {
+		this.updated_At = updated_At;
+	}
+	
+	
+}
