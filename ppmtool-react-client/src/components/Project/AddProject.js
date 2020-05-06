@@ -13,12 +13,19 @@ class AddProject extends Component {
             projectIdentifier :"",
             description: "",
             start_date:"",
-            end_date :""
+            end_date :"",
+            errors:{}
         };
 
         this.onChange= this.onChange.bind(this);
         this.onSubmit= this.onSubmit.bind(this);
     }
+
+   componentWillReceiveProps(nextProps){
+       if(nextProps.errors){
+           this.setState({ errors : nextProps.errors})
+       }
+   }
 
    onChange(event){
         this.setState({[event.target.name]: event.target.value})
@@ -40,8 +47,10 @@ class AddProject extends Component {
    }
     
     render() {
-        return (
-    
+
+         const {errors} = this.state;
+    return (
+    <div>
     <div className="project">
         <div className="container">
             <div className="row">
@@ -54,12 +63,15 @@ class AddProject extends Component {
                             name="projectName" 
                             value={this.state.projectName}
                             onChange={this.onChange}/>
+                            <p>{errors.projectName}</p>
+
                         </div>
                         <div className="form-group">
                             <input type="text" className="form-control form-control-lg" placeholder="Unique Project ID"
                             name="projectIdentifier"
                             value={this.state.projectIdentifier}
                             onChange={this.onChange}/>
+                            <p>{errors.projectIdentifier}</p>
                         </div>
                       
                         <div className="form-group">
@@ -67,6 +79,7 @@ class AddProject extends Component {
                             name="description"
                             value={this.state.description}
                             onChange={this.onChange}></textarea>
+                            <p>{errors.description}</p>
                         </div>
                         <h6>Start Date</h6>
                         <div className="form-group">
@@ -87,12 +100,18 @@ class AddProject extends Component {
             </div>
         </div>
     </div>
+ </div>
         );
     }
 }
 
 AddProject.propTypes={
-     createProject :PropTypes.func.isRequired
+     createProject :PropTypes.func.isRequired,
+     errors : PropTypes.object.isRequired
 }
 
-export default  connect(null, {createProject}) (AddProject);
+const mapErrorToState = state =>({
+        errors: state.errors
+});
+
+export default  connect(mapErrorToState, {createProject}) (AddProject);
