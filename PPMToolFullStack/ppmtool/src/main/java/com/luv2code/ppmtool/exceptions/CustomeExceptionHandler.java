@@ -1,6 +1,6 @@
 package com.luv2code.ppmtool.exceptions;
 
-import java.sql.Date;
+
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +23,24 @@ public class CustomeExceptionHandler  extends ResponseEntityExceptionHandler{
 		
 	}
 	
-	@ExceptionHandler(Exception.class)
+	
+	@ExceptionHandler(ProjectTaskIdException.class)
+	public final ResponseEntity<Object> handleProjectTaskIdException(ProjectTaskIdException ex, WebRequest request){
+		ProjectIdExceptionResponse exceptionResponse = new ProjectIdExceptionResponse(ex.getMessage());
+		return  new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(UserNameAlreadyExistException.class)
+	public final ResponseEntity<Object> handleUsernameAlreadyExistException(UserNameAlreadyExistException ex, WebRequest request){
+		UsernameAlreadyExistExceptionResponse exceptionRes = new UsernameAlreadyExistExceptionResponse(ex.getMessage());
+		return  new ResponseEntity(exceptionRes, HttpStatus.BAD_REQUEST);
+	}
+	
+/*	@ExceptionHandler(Exception.class)
 	public final ResponseEntity<ProjectIdExceptionResponse> handleProjectExceptionId(ProjectIdException ex, WebRequest request){
 		ProjectIdExceptionResponse  exceptionResponse = new ProjectIdExceptionResponse(new Date(0), ex.getMessage(),request.getDescription(true));
 	
 		return new ResponseEntity<ProjectIdExceptionResponse>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-}
+}*/
+	
 }	

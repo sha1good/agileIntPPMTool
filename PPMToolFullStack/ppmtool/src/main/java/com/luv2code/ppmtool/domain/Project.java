@@ -2,17 +2,23 @@ package com.luv2code.ppmtool.domain;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Project {
@@ -41,7 +47,20 @@ public class Project {
 	private Date create_At;
 	
 	@JsonFormat(pattern="yyyy-mm-dd")
+	@Column(updatable=false)
 	private Date updated_At;
+	
+	@OneToOne(fetch =FetchType.EAGER,cascade=CascadeType.ALL, mappedBy="project")
+	//When you get an infinite Recursion problem, go to the child side and break the loop using /@JsonIgnore
+	//And because I do not need my project backlog  I want to load my project from the database, I can use @JsonIgnore here too
+	@JsonIgnore
+	private Backlog backlog;
+	
+	@ManyToOne(fetch =FetchType.LAZY)
+	@JsonIgnore
+	private User user;
+	
+	private String projectLeader;
 	
 	public Project() {
 		
@@ -121,6 +140,33 @@ public class Project {
 	public void setUpdated_At(Date updated_At) {
 		this.updated_At = updated_At;
 	}
+
+	public Backlog getBacklog() {
+		return backlog;
+	}
+
+	public void setBacklog(Backlog backlog) {
+		this.backlog = backlog;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public String getProjectLeader() {
+		return projectLeader;
+	}
+
+	public void setProjectLeader(String projectLeader) {
+		this.projectLeader = projectLeader;
+	}
+	
+	
+	
 	
 	
 }

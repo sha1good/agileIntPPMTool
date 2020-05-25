@@ -1,5 +1,6 @@
 package com.luv2code.ppmtool.controller;
 
+import java.security.Principal;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -25,8 +26,7 @@ import com.luv2code.ppmtool.exceptions.ProjectIdException;
 import com.luv2code.ppmtool.services.MapValidationErrorService;
 import com.luv2code.ppmtool.services.ProjectServices;
 
-import net.bytebuddy.asm.Advice.Return;
-import net.bytebuddy.implementation.bytecode.Throw;
+
 
 @RestController
 @RequestMapping("/api/project")
@@ -42,19 +42,19 @@ public class ProjectController {
 	//Binding Result helps us to Bind our Object with the validation that was setup
 	
 	@PostMapping("")
-	public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project, BindingResult result){
+	public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project, BindingResult result,Principal principal){
 		
 	ResponseEntity<?> errorMap =mapValidationErrorService.MapValidationError(result);
 	if(errorMap !=null) return errorMap;
-		Project project1 = projectService.saveOrUpdateProject(project);
+		Project project1 = projectService.saveOrUpdateProject(project,principal.getName());
 		return new ResponseEntity<Project>(project1,HttpStatus.CREATED);
 	}
 	
 	
 	@GetMapping("/{projectId}")
-	public ResponseEntity<?> getProjectById(@PathVariable String projectId){
+	public ResponseEntity<?> getProjectById(@PathVariable String projectId,Principal principal){
 		
-		Project project = projectService.findByProjectIdentifier(projectId);
+		Project project = projectService.findByProjectIdentifier(projectId,principal.getName());
 		
 		 return new ResponseEntity<Project>(project, HttpStatus.OK);
 		 
@@ -62,21 +62,21 @@ public class ProjectController {
 	}
 	
   @GetMapping("/all")
-  public Iterable<Project> findAllProject(){
-	   return projectService.findAllProject();
+  public Iterable<Project> findAllProject(Principal principal){
+	   return projectService.findAllProject(principal.getName());
   }
 	
 	
 	
 	@DeleteMapping("/{projectId}")
-	public ResponseEntity<?> deleteProjectById(@PathVariable String projectId) {
-	  projectService.deleteProjectByIdentifier(projectId);
+	public ResponseEntity<?> deleteProjectById(@PathVariable String projectId,Principal principal) {
+	  projectService.deleteProjectByIdentifier(projectId,principal.getName());
 	 return new ResponseEntity<String>("Proejct with ID : '" + projectId + "' was deleted successfully.", HttpStatus.OK);	 
 	}
 	
 	
 	@PutMapping("/{id}")
-	 public ResponseEntity<?> updateProject(@PathVariable Long id, @RequestBody Project project){
+	 public ResponseEntity<?> updateProject(@PathVariable Long id, @RequestBody Project project,Principal principal){
 		
 		
 		//Long  Proid = Long.parseLong(id);
@@ -92,7 +92,7 @@ public class ProjectController {
 			projectGotten.setDescription(project.getDescription());
 			projectGotten.setProjectIdentifier(project.getProjectIdentifier());
 			
-			projectService.saveOrUpdateProject(projectGotten);
+			projectService.saveOrUpdateProject(projectGotten,principal.getName());
 			
 			return new  ResponseEntity<String>("Your Project with '" + id + "' was successfully updated!", HttpStatus.OK);
 		}else {
